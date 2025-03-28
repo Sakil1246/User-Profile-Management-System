@@ -6,7 +6,7 @@ const userSchema=mongoose.Schema({
     },
     address:{
         type:String,
-        required:true
+        //required:true
     },
     email:{
         type:String,
@@ -27,3 +27,5 @@ const userSchema=mongoose.Schema({
 
     
 })
+
+module.exports=mongoose.model("User",userSchema);
