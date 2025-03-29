@@ -15,7 +15,7 @@ dotenv.config();
     if(validationError){
         return res.status(400).json({error:validationError.error});
     }
-    const {name,email,password}=req.body;
+    const {name,email,password,address}=req.body;
     const isExist=await User.findOne({email:email});
     if(isExist){
         return res.status(400).json({ error: "Email already exists! Please Sign In" });
@@ -24,6 +24,7 @@ dotenv.config();
     const user=new User({
         name,
         email,
+        address,
         password:hashPassword
     })
 
