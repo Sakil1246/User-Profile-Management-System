@@ -3,7 +3,9 @@ const app = express();
 const connectDB = require("./config/database");
 
 const cookieParser = require("cookie-parser");
-const userRouter = require("./routes/userAuth");
+
+const profileRouter = require("./routes/profile.router");
+const userAuthRouter = require("./routes/userAuth.router");
 
 
 
@@ -13,11 +15,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 
-// app.use("/", authRouter);
-// app.use("/", studentAuthRouter);
-// app.use("/", examRouter);
-// app.use("/", adminRouter);
-app.use("/",userRouter);
+
+app.use("/",userAuthRouter);
+app.use("/",profileRouter);
 
 connectDB()
   .then(() => {

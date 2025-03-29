@@ -4,9 +4,13 @@ const User=require("../models/user");
 const bcrypt=require("bcrypt");
 const validateSignUp = require("../utils/validation");
 const jwt=require("jsonwebtoken");
+const dotenv=require("dotenv");
+dotenv.config();
 
 
-userRouter.post("/user/signUp",async(req,res)=>{
+
+//Api for signUp
+  const signUp=async(req,res)=>{
     try{
     const validationError=validateSignUp(req);
     if(validationError){
@@ -25,23 +29,36 @@ userRouter.post("/user/signUp",async(req,res)=>{
     })
 
     const data=await user.save();
-    console.log(data);
+    //console.log(data);
     const userId=data._id;
-    const token=jwt.sign(userId,"user@manaage");
-    res.cookie("token",token);
+    const token=jwt.sign({_id:userId},process.env.JWT_SECRET_KEY);
+    res.cookie("token",token,{ expires: new Date(Date.now() + 8 * 3600000) });
 
     res.status(201).json({
         message:"User created successfully",
-        data:data
+        data:{
+
+            // Sending back filtered user data so that the UI developer can
+            // store it in and use it to display in the UI
+
+            name:data.name,
+            email:data.email,
+            photoUrl:data.photoUrl,
+            bio:data.bio,
+            address:data.address,
+        }
+
     });
     }
     catch(err){
         //console.log(err);
         res.status(400).json({ error: "ERROR: " + err.message });
     }
-})
+}
 
-userRouter.post("/user/login",async(req,res)=>{
+
+//Api for sign in
+const login=async(req,res)=>{
     try{
         const {email,password}=req.body;
         const user=await User.findOne({email:email});
@@ -52,13 +69,23 @@ userRouter.post("/user/login",async(req,res)=>{
         if(!isPasswordValid){
             return res.status(400).json({error:"Invalid credentials"});
         }
-        const userId=user._id.toString();
+        //const userId=user._id.toString();
         //console.log(userId);
-        const token=jwt.sign(userId,"user@manaage");
-        res.cookie("token",token);
+        const token=jwt.sign({_id:user._id},process.env.JWT_SECRET_KEY);
+        res.cookie("token",token,{ expires: new Date(Date.now() + 8 * 3600000) });
         res.status(200).json({
-            message:"User logged in successfully",
-            data:user
+            message:" logged in successfully",
+            data:{
+
+                // Sending back filtered user data so that the UI developer can
+                // store it in and use it to display in the UI
+               
+                name:user.name,
+                email:user.email,
+                photoUrl:user.photoUrl,
+                bio:user.bio,
+                address:user.address,
+            }
         });
 
     }
@@ -66,6 +93,18 @@ userRouter.post("/user/login",async(req,res)=>{
         //console.log(err);
         res.status(400).json({ error: "ERROR: " + err.message });
     }
-})
+}
 
-module.exports = userRouter;
+
+
+//Api for sign out
+const logout=async(req,res)=>{
+    try{
+        res.cookie("token",null,{ expires: new Date(Date.now()) });
+        res.send("logout successfully");
+    }catch(err){
+        //console.log(err);
+        res.status(400).json({ error: "ERROR: " + err.message });
+    }
+}
+module.exports = {signUp,login,logout};
