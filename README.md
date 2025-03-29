@@ -28,27 +28,27 @@ The RESTful API allows users to register, log in, update their profiles, and cha
 **npm install**  
 
 ### 3️⃣ Setup Environment Variables  
-Create a .env file in the root directory and add the following:  
-PORT=5000  
-MONGO_URI=your_mongodb_connection_string  
-JWT_SECRET_KEY=your_secret_key  
+**Create a .env file in the root directory and add the following:**  
+**PORT=5000**  
+**MONGO_URL=your_mongodb_connection_string**  
+**JWT_SECRET_KEY=your_secret_key**  
 
-4️⃣ Start the Server  
-npm run dev  
+### 4️⃣ Start the Server  
+**npm run dev**  
 
-API Endpoints  
+### API Endpoints  
 
-Authentication  
+**Authentication**  
 - Sign Up → POST /user/signUp (Register a new user)  
 - Login → POST /user/login (Log in and get a token)  
 - Logout → POST /user/logout (Log out user)  
 
-Profile Management  
+**Profile Management**  
 - View Profile → GET /user/viewProfile  
 - Update Profile → PATCH /user/updateProfile  
 - Change Password → PATCH /user/changePassword  
 - Delete Account → DELETE /user/deleteProfile  
 
-Postman Documentation  
+### Postman Documentation  
 https://documenter.getpostman.com/view/41662671/2sB2cPjR8p
 
