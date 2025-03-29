@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
 const connectDB = require("./config/database");
-
 const cookieParser = require("cookie-parser");
-
 const profileRouter = require("./routes/profile.router");
 const userAuthRouter = require("./routes/userAuth.router");
-
+const dotenv = require("dotenv");
+dotenv.config();
 
 
 
@@ -22,8 +21,8 @@ app.use("/",profileRouter);
 connectDB()
   .then(() => {
     console.log("Database is connected");
-    app.listen(5555, () => {
-      console.log("Server is successfully listening to port 5555");
+    app.listen(process.env.PORT, () => {
+      console.log("Server is successfully listening to port "+process.env.PORT);
     });
   })
   .catch((err) => {

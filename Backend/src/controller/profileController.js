@@ -1,5 +1,5 @@
 const User=require("../models/user");
-
+const bcrypt=require("bcrypt");
 
 
 
@@ -39,7 +39,13 @@ const updateProfile=async(req,res)=>{
          await user.save();
          res.status(200).json({
             message:"User profile updated successfully",
-            data:user
+            data:{
+                name:user.name,
+                email:user.email,
+                photoUrl:user.photoUrl,
+                bio:user.bio,
+                address:user.address
+            }
          })
     }catch(err){
         res.status(400).send("ERROR: "+err.message);
@@ -49,6 +55,29 @@ const updateProfile=async(req,res)=>{
 
 }
 
+
+
+//Api for update the password
+
+const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user._id; 
+
+        const user = await User.findById({_id:userId});
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) return res.status(400).json({ error: "Current password is incorrect" });
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        await user.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (err) {
+        res.status(500).json({ error: "ERROR: " + err.message });
+    }
+};
 
 //Api for delete the profile
 
@@ -62,4 +91,4 @@ const deleteProfile=async(req,res)=>{
         res.status(400).send("ERROR: "+err.message);
     }
 }
-module.exports={viewProfile,updateProfile,deleteProfile};
+module.exports={viewProfile,updateProfile,changePassword,deleteProfile};
